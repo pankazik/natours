@@ -6,12 +6,14 @@ const AppError = require('../utils/appError');
 
 exports.getOverview = catchAsync(async (req, res, next) => {
   //1 gey data from colection
-
-  const bookings = await Booking.find({ user: res.locals.user.id });
-  const tourIDs = bookings.map((booking) => booking.tour);
-
-  const tours = await Tour.find({ _id: { $nin: tourIDs } });
-
+  let tours;
+  if (res.locals.user.id) {
+    const bookings = await Booking.find({ user: res.locals.user.id });
+    const tourIDs = bookings.map((booking) => booking.tour);
+    tours = await Tour.find({ _id: { $nin: tourIDs } });
+  } else {
+    tours = await Tour.find();
+  }
   res.status(200).render('overview', {
     title: 'All tours',
     tours,
