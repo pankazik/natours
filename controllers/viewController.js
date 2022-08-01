@@ -7,7 +7,7 @@ const AppError = require('../utils/appError');
 exports.getOverview = catchAsync(async (req, res, next) => {
   //1 gey data from colection
   let tours;
-  if (res.locals.user.id) {
+  if (res.locals.user) {
     const bookings = await Booking.find({ user: res.locals.user.id });
     const tourIDs = bookings.map((booking) => booking.tour);
     tours = await Tour.find({ _id: { $nin: tourIDs } });
